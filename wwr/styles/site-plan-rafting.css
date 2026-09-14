@@ -8,11 +8,11 @@ Fonts are separated by a & */
 }
 
 :root {
-    --color-primary:#6EA4BF;
-    --color-primary-dark:#41337A;
-    --color-primary-light:#C2EFEB;
-    --color-background:#FFFAE1;
-    --color-accent:#EEB4B3;
+  --color-primary:#6EA4BF;
+  --color-primary-dark:#41337A;
+  --color-primary-light:#C2EFEB;
+  --color-background:#FFFAE1;
+  --color-accent:#EEB4B3;
   /* change the values below to your colors from your palette */
   --primary-color: var(--color-primary)  ;
   --secondary-color: var(--color-primary-dark);
