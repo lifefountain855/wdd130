@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Favorite Devotionals</title>
+  <link rel="stylesheet" href="styles/styles.css" />
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <div class="header-image">
+        <h1>My Favorite Devotionals</h1>
+      </div>
+    </header>
+    <main>
+      <div class="content-box">
+         <table>
+            <tr>
+              <th>Speaker</th>
+              <th>Title</th>
+              <th>Location</th>
+              <th>Year</th>
+            </tr>
+            <tr style="height: 20px;"><td colspan="4" class="spacer"></td></tr> 
+            <tr>
+              <td>President Meridith III</td>
+              <td>Regular Temple Worship</td>
+              <td>BYU-I</td>
+              <td>2026</td>
+            </tr>
+            <tr>
+              <td>Elder James O. Fantone</td>
+              <td>The Battle Is the Lord's</td>
+              <td>BYU-I</td>
+              <td>2026</td>
+            </tr>
+            <tr>
+              <td>Rob Garrett</td>
+              <td>He Will Make More of You</td>
+              <td>BYU-I</td>
+              <td>2026</td>
+            </tr>
+         </table>
+         <form>
+          <h1>Add another</h1>
+          <label>Speaker:</label>
+          <input id="speaker_input" type="text" placeholder="President Meridith III">
+          <label>Title:</label>
+          <input id="speaker_input" type="text" placeholder="Random Talk">
+          <label>Location:</label>
+          <input id="speaker_input" type="text" placeholder="BYU-I">
+          <label>Year:</label>
+          <input id="speaker_input" type="text" placeholder="2026">
+          <button type="submit">Submit</button>
+         </form>
+      </div>
+    </main>
+  </div>
+</body>
+</html>
