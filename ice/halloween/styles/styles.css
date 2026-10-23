@@ -1,0 +1,111 @@
+body {
+    background-color: #111;
+    color:#eee;
+    font-family:Arial, Helvetica, sans-serif;
+    margin:0px;
+    position:relative;
+}
+
+header {
+    width:100%;
+    color:white;
+    background-color: #222;
+    padding:15px 0px;
+}
+nav ul {
+    display:flex;
+    justify-content: space-evenly;
+    margin:0px;
+}
+
+nav ul li {
+    padding:20px 25px;
+    list-style-type: none;
+}
+nav ul li:hover{
+    background-color: #444;
+    color:#ff954e;
+}
+
+
+
+main {
+    display: flex;
+    flex-direction: column;
+    padding:0px 15%;
+    gap:10px;
+}
+main h1{
+    align-self:center;
+    padding:40px 60px;
+    border-radius: 20px;
+    background-color:#ffffff99;
+    color:#520864;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    position: absolute;
+    top: 50%;   
+    left: 50%;
+    transform: translate(-50%, -350%);
+    margin: 0;
+    z-index: 10;
+    animation: h1FadeSlideIn 1.2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+/* main img{
+    
+} */
+main *{
+    animation: fadeSlideIn 1.2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+main section {
+    padding:0px 5px;
+    display: flex;
+    flex-direction: column;
+}
+main section h2 {
+    color:#ff954e;
+    align-self: center;
+}
+main section h2:hover {
+    color:#ff954e99;
+}
+
+
+
+
+footer {
+    padding:20px;
+    padding-top:40px;
+    margin-top:100px;
+    display:flex;
+    justify-content:flex-end;
+    background-color:#222;
+    font-size:0.8em;
+    font-style:italic;
+    color:#bbb;
+}
+
+@keyframes fadeSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateY(30px); /* Starts 30px lower */
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);    /* Slides up to its original position */
+  }
+}
+
+@keyframes h1FadeSlideIn {
+  0% {
+    opacity: 0;
+    /* Keeps horizontal centering (-50%) but starts lower than its final position (-320%) */
+    transform: translate(-50%, -320%); 
+  }
+  100% {
+    opacity: 1;
+    /* Ends at your exact desired design coordinates */
+    transform: translate(-50%, -350%); 
+  }
+}
