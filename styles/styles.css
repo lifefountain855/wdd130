@@ -150,3 +150,9 @@ footer div{
 .align-center{
     align-items:center;
 }
+
+.grid-cols-3{
+    display:grid;
+    grid-template-columns: repeat(3,1fr);
+    gap:15px;
+}
