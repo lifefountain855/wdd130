@@ -54,6 +54,11 @@ main {
     width:70%;
     margin:0;
 }
+.space-between {
+    display:flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
 .card{
     padding:10px;
     border: 2px solid #444;
