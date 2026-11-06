@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Retro OS Desktop</title>
+  <style>
+    /* Reset & Core Styling */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: "MS Sans Serif", Tahoma, Arial, sans-serif;
+      font-size: 12px;
+      background-color: #008080; /* Classic Windows 95 Teal */
+      color: #000;
+      height: 100vh;
+      overflow: hidden;
+      position: relative;
+      user-select: none;
+    }
+
+    /* --- THE CLASSIC RETRO 3D BEVEL BORDERS --- */
+    
+    /* Outset Border: Makes elements pop UP */
+    .border-outset {
+      border: 2px solid;
+      border-color: #ffffff #808080 #808080 #ffffff;
+      box-shadow: inset 1px 1px 0px #ffffff, inset -1px -1px 0px #0a0a0a;
+      background-color: #c0c0c0;
+    }
+
+    /* Inset Border: Makes elements sink DOWN */
+    .border-inset {
+      border: 2px solid;
+      border-color: #808080 #ffffff #ffffff #808080;
+      box-shadow: inset 1px 1px 0px #0a0a0a, inset -1px -1px 0px #dfdfdf;
+      background-color: #ffffff;
+    }
+
+    /* --- DESKTOP GRID LAYOUT --- */
+    .desktop-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, 80px);
+      grid-template-rows: repeat(auto-fill, 80px);
+      grid-auto-flow: column;
+      gap: 15px;
+      padding: 20px;
+      height: calc(100vh - 40px);
+      width: 100%;
+    }
+
+    /* Desktop Icons */
+    .desktop-icon {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      text-decoration: none;
+      color: white;
+      cursor: pointer;
+    }
+
+    .desktop-icon .icon-graphic {
+      width: 32px;
+      height: 32px;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+    }
+
+    .desktop-icon span {
+      font-size: 11px;
+      padding: 2px 4px;
+      word-break: break-word;
+    }
+
+    .desktop-icon:hover span {
+      background-color: rgba(0, 0, 128, 0.5);
+    }
+    
+    .desktop-icon:focus span {
+      outline: 1px dotted #fff;
+      background-color: #000080;
+    }
+
+    /* --- WINDOW MANAGEMENT ENGINE (:target) --- */
+    .window {
+      display: none;
+      position: absolute;
+      width: 450px;
+      height: 320px;
+      min-width: 250px;
+      min-height: 150px;
+      z-index: 10;
+    }
+
+    /* Pure CSS logic: URL hash matching renders window visible */
+    .window:target {
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Window Positional Offsets */
+    #win-computer { top: 10%; left: 20%; }
+    #win-notepad  { top: 20%; left: 30%; }
+
+    /* Window Header */
+    .title-bar {
+      background: linear-gradient(90deg, #000080, #1080d0);
+      color: #ffffff;
+      padding: 3px 5px 3px 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-weight: bold;
+    }
+
+    .title-bar-text {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .title-bar-controls {
+      display: flex;
+      gap: 2px;
+    }
+
+    .win-btn {
+      width: 16px;
+      height: 14px;
+      text-decoration: none;
+      color: #000;
+      font-weight: bold;
+      font-size: 10px;
+      line-height: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .win-btn:active {
+      border-color: #808080 #ffffff #ffffff #808080;
+      box-shadow: inset 1px 1px 0px #0a0a0a;
+      padding: 1px 0px 0px 1px;
+    }
+
+    .window-body {
+      flex: 1;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      overflow: auto;
+    }
+
+    .inner-canvas {
+      flex: 1;
+      overflow: auto;
+      padding: 5px;
+    }
+
+    textarea.inner-canvas {
+      font-family: "Courier New", monospace;
+      font-size: 13px;
+      resize: none;
+      outline: none;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* --- TASKBAR & START MENU ENGINE --- */
+    .taskbar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 40px;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      padding: 2px 4px;
+      gap: 5px;
+    }
+
+    #start-toggle {
+      display: none;
+    }
+
+    .start-btn-label {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 2px 8px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    #start-toggle:checked + .start-btn-label {
+      border-color: #808080 #ffffff #ffffff #808080;
+      box-shadow: inset 1px 1px 0px #0a0a0a, inset -1px -1px 0px #dfdfdf;
+      padding: 3px 7px 1px 9px;
+    }
+
+    .start-menu {
+      display: none;
+      position: absolute;
+      bottom: 38px;
+      left: 2px;
+      width: 180px;
+      z-index: 110;
+    }
+
+    #start-toggle:checked ~ .start-menu {
+      display: block;
+    }
+
+    .start-menu-container {
+      display: flex;
+      min-height: 200px;
+    }
+
+    .start-menu-sidebar {
+      background-color: #808080;
+      color: #c0c0c0;
+      width: 30px;
+      writing-mode: vertical-lr;
+      transform: rotate(180deg);
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 8px;
+      font-weight: bold;
+      font-size: 14px;
+      letter-spacing: 1px;
+    }
+
+    .start-menu-sidebar span {
+      color: #fff;
+    }
+
+    .start-menu-list {
+      flex: 1;
+      list-style: none;
+      padding: 2px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .start-menu-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 8px;
+      text-decoration: none;
+      color: #000;
+      cursor: pointer;
+    }
+
+    .start-menu-item:hover {
+      background-color: #000080;
+      color: #ffffff;
+    }
+
+    .divider {
+      height: 2px;
+      border-top: 1px solid #808080;
+      border-bottom: 1px solid #ffffff;
+      margin: 4px 2px;
+    }
+
+    .sys-tray {
+      margin-left: auto;
+      padding: 4px 10px;
+      font-size: 11px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ================= DESKTOP ICON LAYOUT ================= -->
+  <div class="desktop-grid">
+    
+    <a href="#win-computer" class="desktop-icon">
+      <div class="icon-graphic">💻</div>
+      <span>My Computer</span>
+    </a>
+
+    <a href="#win-notepad" class="desktop-icon">
+      <div class="icon-graphic">📝</div>
+      <span>Notepad</span>
+    </a>
+    
+  </div>
+
+  <!-- ================= WINDOWS (TARGET DRIVEN) ================= -->
+
+  <!-- Window 1: My Computer -->
+  <div id="win-computer" class="window border-outset">
+    <div class="title-bar">
+      <div class="title-bar-text"><span>💻</span> My Computer</div>
+      <div class="title-bar-controls">
+        <button class="win-btn border-outset">- </button>
+        <button class="win-btn border-outset">[ ]</button>
+        <a href="#" class="win-btn border-outset">X</a>
+      </div>
+    </div>
+    <div class="window-body">
+      <p style="margin-bottom: 10px;">Select an item to view its description.</p>
+      <div class="inner-canvas border-inset" style="background: white; min-height: 120px; padding: 10px;">
+        <p class="start-menu-item">📁 3½ Floppy (A:)</p>
+        <p class="start-menu-item">📁 Hard Disk (C:)</p>
+        <p class="start-menu-item">💿 Audio CD (D:)</p>
+        <p class="start-menu-item">⚙️ Control Panel</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Window 2: Notepad -->
+  <div id="win-notepad" class="window border-outset">
+    <div class="title-bar">
+      <div class="title-bar-text"><span>📝</span> Untitled - Notepad</div>
+      <div class="title-bar-controls">
+        <button class="win-btn border-outset">-</button>
+        <button class="win-btn border-outset">[ ]</button>
+        <a href="#" class="win-btn border-outset">X</a>
+      </div>
+    </div>
+    <div class="window-body">
+      <textarea class="inner-canvas border-inset" placeholder="Type your text note here..."></textarea>
+    </div>
+  </div>
+
+  <!-- ================= THE TASKBAR & START MENU (CHECKBOX DRIVEN) ================= -->
+  <div class="taskbar border-outset">
+    
+    <!-- Checkbox state control anchor -->
+    <input type="checkbox" id="start-toggle">
+    
+    <!-- Target label matching checkbox ID -->
+    <label for="start-toggle" class="start-btn-label border-outset">
+      <span>💾</span> Start
+    </label>
+
+    <!-- Interactive Start Menu Component -->
+    <div class="start-menu border-outset">
+      <div class="start-menu-container">
+        <div class="start-menu-sidebar">
+          <span>Windows</span>95
+        </div>
+        <ul class="start-menu-list">
+          <li><a href="#win-computer" class="start-menu-item"><span>💻</span> Programs</a></li>
+          <li><a href="#win-notepad" class="start-menu-item"><span>📝</span> Documents</a></li>
+          <li class="divider"></li>
+          <li><a href="#" class="start-menu-item"><span>🔒</span> Log Off...</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- System Tray -->
+    <div class="sys-tray border-inset">
+      <span>12:00 PM</span>
+    </div>
+
+  </div>
+
+</body>
+</html>
+
+<!-- Elevator pitch:
+
+It will offer visitors an authentic, nostalgic Windows 95 desktop experience built entirely with pure HTML and CSS.
+It will have classic 3D bevel borders, a functional Start menu, and interactive windows for apps like Notepad—all running 
+seamlessly without external dependencies. By leveraging clever CSS target selectors and state hacks, it will showcase a clean,
+creative approach to UI design that turns web browsing into a memorable interactive experience. It will provide an engaging,
+tactile interface that proves just how expressive native web tools can be. Would you like to see how it opens and functions? -->
