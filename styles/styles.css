@@ -161,3 +161,9 @@ footer div{
     grid-template-columns: repeat(3,1fr);
     gap:15px;
 }
+.italic {
+    font-style: italic;
+}
+.o70 {
+    opacity: 70%;
+}
